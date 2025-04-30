@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Lyrics Finder</title>
+  <style>
+    body { font-family: Arial; padding: 20px; max-width: 600px; margin: auto; }
+    h2 { text-align: center; }
+    input, button { width: 100%; padding: 10px; margin-top: 10px; }
+    pre { background: #f4f4f4; padding: 15px; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+  <h2>🎶 Lyrics Finder</h2>
+  <input type="text" id="artist" placeholder="Artist Name">
+  <input type="text" id="song" placeholder="Song Title">
+  <button onclick="getLyrics()">Get Lyrics</button>
+  <pre id="output">Lyrics will appear here...</pre>
+
+  <script>
+    function getLyrics() {
+      const artist = document.getElementById("artist").value.trim();
+      const song = document.getElementById("song").value.trim();
+      const output = document.getElementById("output");
+
+      if (!artist || !song) {
+        output.textContent = "Please enter both artist and song name.";
+        return;
+      }
+
+      output.textContent = "Loading lyrics...";
+
+      fetch(`https://api.lyrics.ovh/v1/${artist}/${song}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.lyrics) {
+            output.textContent = data.lyrics;
+          } else {
+            output.textContent = "Lyrics not found.";
+          }
+        })
+        .catch(() => {
+          output.textContent = "Error fetching lyrics.";
+        });
+    }
+  </script>
+</body>
+</html>
